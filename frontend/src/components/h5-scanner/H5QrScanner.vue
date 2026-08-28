@@ -23,7 +23,11 @@
 
 <script setup>
 import { nextTick, onBeforeUnmount, ref, watch } from 'vue'
-import { createH5CameraScanSession, isH5CameraScanSupported } from '../../utils/h5-scanner'
+import {
+  H5_CAMERA_SCAN_UNSUPPORTED_MESSAGE,
+  createH5CameraScanSession,
+  isH5CameraScanSupported,
+} from '../../utils/h5-scanner'
 
 const props = defineProps({
   modelValue: {
@@ -57,7 +61,7 @@ async function start() {
   statusText.value = '正在打开摄像头...'
 
   if (!isH5CameraScanSupported()) {
-    statusText.value = '当前浏览器不支持摄像头扫码'
+    statusText.value = H5_CAMERA_SCAN_UNSUPPORTED_MESSAGE
     emit('error', new Error(statusText.value))
     return
   }

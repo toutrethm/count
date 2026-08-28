@@ -153,6 +153,7 @@ import { getUser } from '../../utils/session'
 import { scanQrCode } from '../../utils/qr'
 import { redirectTo } from '../../utils/navigation'
 import { formatCapabilityListLabel } from '../../utils/capability-labels'
+import { getH5CameraScanAction } from '../../utils/h5-scanner'
 import H5QrScanner from '../../components/h5-scanner/H5QrScanner.vue'
 import {
   buildOrderItemPayload,
@@ -226,6 +227,11 @@ function removeOrderItem(index) {
 
 async function handleCameraScan() {
   if (isBrowserRuntime()) {
+    const h5CameraAction = getH5CameraScanAction()
+    if (!h5CameraAction.supported) {
+      uni.showToast({ title: h5CameraAction.message, icon: 'none' })
+      return
+    }
     showH5Scanner.value = true
     return
   }

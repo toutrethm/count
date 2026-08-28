@@ -1,5 +1,7 @@
 import jsQR from 'jsqr'
 
+export const H5_CAMERA_SCAN_UNSUPPORTED_MESSAGE = '当前浏览器不支持摄像头扫码，请手动输入订单号'
+
 export function isH5CameraScanSupported(env = {}) {
   const navigatorObject = env.navigator || (typeof navigator !== 'undefined' ? navigator : null)
   const windowObject = env.window || (typeof window !== 'undefined' ? window : null)
@@ -9,6 +11,17 @@ export function isH5CameraScanSupported(env = {}) {
       navigatorObject.mediaDevices &&
       typeof navigatorObject.mediaDevices.getUserMedia === 'function'
   )
+}
+
+export function getH5CameraScanAction(env = {}) {
+  if (isH5CameraScanSupported(env)) {
+    return { supported: true }
+  }
+
+  return {
+    supported: false,
+    message: H5_CAMERA_SCAN_UNSUPPORTED_MESSAGE,
+  }
 }
 
 export function extractScanText(payload) {
@@ -79,7 +92,7 @@ export function createH5CameraScanSession({ videoEl, canvasEl, facingMode = 'env
     const begin = async () => {
       try {
         if (!isH5CameraScanSupported()) {
-          throw new Error('浏览器不支持摄像头扫码')
+          throw new Error(H5_CAMERA_SCAN_UNSUPPORTED_MESSAGE)
         }
 
         state.stream = await navigator.mediaDevices.getUserMedia({
